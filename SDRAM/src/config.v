@@ -10,7 +10,7 @@
 // -------------- async FIFO ------------------------
 `define FIFO_WIDTH      16
 `define FIFO_DEPTH      512
-`define POINTER_WIDTH   10
+`define POINTER_WIDTH   10 
 
 
 // -------------- sdram config -----------------------
@@ -21,5 +21,4 @@
 // bank (one-hot), can be {PINGPONG_BUFFER, BANK_INCR, BANK_ONE}
 // for PINGPONG_BUFFER, assume that read port faster than write port
 `define     PINGPONG_BUFFER
-
 
