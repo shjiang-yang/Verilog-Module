@@ -28,9 +28,8 @@ initial begin
     #100;
     key_in  =   0   ;
     bounce(10);
-    bounce(11);
+    #10_100_000;
     bounce(13);
-    bounce(15);
     #10_000_000;
     #1000;
     $stop;
@@ -42,11 +41,14 @@ task bounce(
         input   [31:0]  seed
     );
         begin
-            rand    =   $dist_uniform (seed, 'd10, 'd1_000)    ;
+            rand    =   $dist_uniform (seed, 'd10, 'd100_000)    ;
             key_in  =   ~key_in ;
             #rand;
             key_in  =   ~key_in ;
-            rand    =   $dist_uniform (seed+1, 'd10, 'd1_000)   ;
+            rand    =   $dist_uniform (seed+1, 'd10, 'd100_000)   ;
+            #rand;
+            key_in  =   ~key_in ;
+            rand    =   $dist_uniform (seed+1, 'd10, 'd100_000)   ;
             #rand;
         end
 endtask

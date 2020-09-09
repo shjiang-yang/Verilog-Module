@@ -14,7 +14,7 @@ module debounce #(
     // key
     input               key_in      ,
     // output
-    output              key_out     
+    output  reg         key_out=1     
 );
 
 // ============================================
@@ -24,7 +24,7 @@ localparam              CNT_END     =   10_000_000/CLK_CYC  ;
 localparam              CNT_WIDTH   =   32     ;
 
 reg     [CNT_WIDTH-1:0] cnt =   'd0     ;
-reg     [ 2:0]          key_in_r        ;
+reg     [ 1:0]          key_in_r        ;
 
 wire                    trig            ;
 
@@ -33,14 +33,14 @@ wire                    trig            ;
 // ============================================
 // detect trig
 always @(posedge sysclk) begin
-    key_in_r    <=  {key_in_r[1:0], key_in} ;
+    key_in_r    <=  {key_in_r[0], key_in} ;
 end
 
-assign trig = key_in_r[2] ^ key_in_r[1] ;
+assign trig = key_out ^ key_in_r[1] ;
 
 // cnt
 always @(posedge sysclk) begin
-    if (trig == 1'b1)
+    if (trig == 1'b0)
         cnt     <=  'd0 ;
     else if (cnt == CNT_END)
         cnt     <=  cnt ;
@@ -49,7 +49,13 @@ always @(posedge sysclk) begin
 end
 
 // key_out
-assign key_out = (cnt == CNT_END) ? key_in_r[2] : key_out   ;
+always @(posedge sysclk) begin
+    if (cnt == CNT_END-1 ) begin
+        key_out     <=  key_in_r[1] ; 
+    end else begin
+        key_out     <=  key_out     ;
+    end
+end
 
 
 endmodule

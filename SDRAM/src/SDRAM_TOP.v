@@ -3,6 +3,7 @@
 // designer:                yang shjiang
 // date:                    2020-07-29
 // description:             the sdram top module
+//                          async_FIFO should be replaced FIFO IP
 // 
 // =======================================================
 
@@ -20,7 +21,7 @@ module SDRAM_TOP(
     output      [12:0]      addr            ,
     output      [ 1:0]      ba              ,
     output      [ 1:0]      dqm             ,
-    output      [15:0]      dq              ,
+    inout       [15:0]      dq              ,
     // write fifo interface
     input                   w_clk           ,
     input                   wen             ,

@@ -54,6 +54,7 @@ module vga_driver(
 reg     [`H_CNT_WIDTH-1:0]      h_cnt       ;
 reg     [`V_CNT_WIDTH-1:0]      v_cnt       ;
 
+reg                             data_req_r  ;
 
 
 // ------------------------------------------------
@@ -108,9 +109,9 @@ end
 always @(posedge sys_clk or negedge rst_n) begin
     if (rst_n == 1'b0) begin
         data_req    <=  1'b0    ;
-    end else if (`H_SYNC_TIME+`H_BACK_PORCH+`H_LEFT_BORDER-3 <= h_cnt               && 
+    end else if (`H_SYNC_TIME+`H_BACK_PORCH+`H_LEFT_BORDER-2 <= h_cnt               && 
                  h_cnt <= `H_SYNC_TIME+`H_BACK_PORCH+`H_LEFT_BORDER+`H_ADDR_TIME-3  && 
-                 `V_SYNC_TIME+`V_BACK_PORCH+`V_TOP_BORDER-1 <= v_cnt                && 
+                 `V_SYNC_TIME+`V_BACK_PORCH+`V_TOP_BORDER <= v_cnt                && 
                  v_cnt <= `V_SYNC_TIME+`V_BACK_PORCH+`V_BOTTOM_BORDER+`V_ADDR_TIME-1) begin
         data_req    <=  1'b1    ;
     end else begin
@@ -118,10 +119,15 @@ always @(posedge sys_clk or negedge rst_n) begin
     end
 end
 
+// data_req_r
+always @(posedge sys_clk) begin
+    data_req_r  <=  data_req    ;
+end
+
 // red/green/blue
-assign blue     =   data[ 4: 0]  ;
-assign green    =   data[10: 5]  ;
-assign red      =   data[15:11]  ;
+assign blue     =   (data_req_r == 1'b0) ? 5'h0 : data[ 4: 0]  ;
+assign green    =   (data_req_r == 1'b0) ? 6'h0 : data[10: 5]  ;
+assign red      =   (data_req_r == 1'b0) ? 5'h0 : data[15:11]  ;
 
 
 endmodule
