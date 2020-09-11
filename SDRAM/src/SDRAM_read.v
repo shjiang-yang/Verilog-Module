@@ -6,7 +6,7 @@
 // 
 // ===============================================
 
-`include "./config.v"
+`include "./SDRAM_config.v"
 
 module SDRAM_read(
     // system signals

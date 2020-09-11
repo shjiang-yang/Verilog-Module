@@ -53,6 +53,7 @@ end
 assign clk_100k = cnt[8]    ;
 
 assign pclk = cmos_pclk     ;
+assign cmos_xclk = clk_24M  ;
 
 ov5640_powerup ov5640_powerup_inst(
     // system signals

@@ -5,7 +5,7 @@
 // description:         the sdram arbit module
 // 
 // ======================================================
-`include "./config.v"
+`include "./SDRAM_config.v"
 
 module SDRAM_arbit(
     // system signals

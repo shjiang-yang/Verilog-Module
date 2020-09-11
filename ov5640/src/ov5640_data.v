@@ -52,7 +52,7 @@ end
 always @(posedge cmos_pclk or negedge rst_n) begin
     if (rst_n == 1'b0) begin
         rgb565  <=  16'd0   ;
-    end else if (rgb565_high == 1'b1) begin
+    end else if (rgb565_high == 1'b0) begin
         rgb565  <=  {cmos_d, rgb565[7:0]}   ;
     end else begin
         rgb565  <=  {rgb565[15:8], cmos_d}  ;

@@ -29,20 +29,21 @@ module SDRAM_TOP(
     // read fifo interface
     input                   r_clk           ,
     input                   ren             ,
-    output      [15:0]      dout            
+    output      [15:0]      dout            ,
+    output                  empty_r         
 );
 
 // ------------- define params and signals -----------------
 wire                write_data_vld  ;
 wire                write_trig      ;
 wire    [15:0]      w_dq            ;
-wire    [ 9:0]      w_data_count    ;
+wire    [ 8:0]      w_data_count    ;
 
 wire                read_trig       ;
 wire                read_data_vld   ;
 wire    [15:0]      r_dq            ;
 wire                write_end       ;
-wire    [9:0]       r_data_count    ;
+wire    [ 8:0]       r_data_count    ;
 
 // ---------------- main code ----------------------------
 SDRAM_arbit SDRAM_arbit_inst(
@@ -73,8 +74,8 @@ SDRAM_arbit SDRAM_arbit_inst(
 
 
 // ---------------------- write fifo ------------------------
-assign write_trig = (w_data_count >= 256) ? 1'b1 : 1'b0 ;
-
+assign write_trig = (w_data_count > 256) ? 1'b1 : 1'b0 ;
+/* 
 async_FIFO write_fifo(
     // system signal 
     .rst_n                      (   rst_n           )  ,
@@ -109,8 +110,46 @@ async_FIFO read_fifo(
     .empty                      (   empty_r         )  ,  // debug
     // data num
     .data_count                 (   r_data_count    )
+); */
+
+// -------------------- fifo IP
+
+fifo write_fifo(
+    // system signal 
+    .rst                        (   ~rst_n          )  ,
+    // write interface
+    .wr_clk                     (   w_clk           )  ,
+    .wr_en                      (   wen             )  ,
+    .din                        (   din             )  ,
+    .full                       (   full_w          )  ,  // debug
+    // read interface
+    .rd_clk                     (   CLK             )  ,
+    .rd_en                      (   write_data_vld  )  ,
+    .dout                       (   w_dq            )  ,
+    .empty                      (   empty_w         )  ,  // debug
+    // data num
+    .wr_data_count              (   w_data_count    )
 );
 
-assign read_trig = (r_data_count < 256 && write_end == 1'b1) ? 1'b1 : 1'b0  ;
+
+// ------------------------ read fifo --------------------------
+fifo read_fifo(
+    // system signal 
+    .rst                        (   ~rst_n          )  ,
+    // write interface
+    .wr_clk                     (   CLK             )  ,
+    .wr_en                      (   read_data_vld   )  ,  // read_data_vld
+    .din                        (   r_dq            )  ,  // r_dq
+    .full                       (   full_r          )  ,  // debug
+    // read interface
+    .rd_clk                     (   r_clk           )  ,
+    .rd_en                      (   ren             )  ,
+    .dout                       (   dout            )  ,
+    .empty                      (   empty_r         )  ,  // debug
+    // data num
+    .rd_data_count              (   r_data_count    )
+);
+
+assign read_trig = (r_data_count < 255 && write_end == 1'b1) ? 1'b1 : 1'b0  ;
 
 endmodule

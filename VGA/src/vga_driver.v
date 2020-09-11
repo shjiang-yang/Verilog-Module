@@ -9,24 +9,48 @@
 // ---------------------------------------------
 // ********** vga define parameters *******
 // ---------------------------------------------
-// 800*600@60Hz
-`define H_SYNC_TIME     128
-`define H_BACK_PORCH    88
-`define H_LEFT_BORDER   0
-`define H_ADDR_TIME     800
-`define H_RIGHT_BORDER  0
-`define H_FRONT_PORCH   40
-`define H_TOTAL_TIME    1056
-`define H_CNT_WIDTH     11
+`define     1024_768_60Hz
 
-`define V_SYNC_TIME     4
-`define V_BACK_PORCH    23
-`define V_TOP_BORDER    0
-`define V_ADDR_TIME     600
-`define V_BOTTOM_BORDER 0
-`define V_FRONT_PORCH   1
-`define V_TOTAL_TIME    628
-`define V_CNT_WIDTH     10
+`ifdef  800_600_60Hz
+    // 800*600@60Hz
+    `define H_SYNC_TIME     128
+    `define H_BACK_PORCH    88
+    `define H_LEFT_BORDER   0
+    `define H_ADDR_TIME     800
+    `define H_RIGHT_BORDER  0
+    `define H_FRONT_PORCH   40
+    `define H_TOTAL_TIME    1056
+    `define H_CNT_WIDTH     11
+
+    `define V_SYNC_TIME     4
+    `define V_BACK_PORCH    23
+    `define V_TOP_BORDER    0
+    `define V_ADDR_TIME     600
+    `define V_BOTTOM_BORDER 0
+    `define V_FRONT_PORCH   1
+    `define V_TOTAL_TIME    628
+    `define V_CNT_WIDTH     10
+`elsif 1024_768_60Hz
+    // 1024*768@60Hz
+    `define H_SYNC_TIME     136
+    `define H_BACK_PORCH    160
+    `define H_LEFT_BORDER   0
+    `define H_ADDR_TIME     1024
+    `define H_RIGHT_BORDER  0
+    `define H_FRONT_PORCH   24
+    `define H_TOTAL_TIME    1344
+    `define H_CNT_WIDTH     11
+
+    `define V_SYNC_TIME     6
+    `define V_BACK_PORCH    29
+    `define V_TOP_BORDER    0
+    `define V_ADDR_TIME     768
+    `define V_BOTTOM_BORDER 0
+    `define V_FRONT_PORCH   3
+    `define V_TOTAL_TIME    806
+    `define V_CNT_WIDTH     10
+
+`endif
 
 
 
@@ -35,7 +59,7 @@
 
 module vga_driver(
     // system signals
-    input               sys_clk     ,
+    input               sys_clk     ,  // dependent to resolution
     input               rst_n       ,
     // req data
     output  reg         data_req    ,
